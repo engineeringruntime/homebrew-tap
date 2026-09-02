@@ -1,0 +1,68 @@
+name: Update from latest Runtime release
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-runtime-formula
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout tap
+        uses: actions/checkout@v4
+
+      - name: Resolve latest public release
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_json="$(curl -fsSL https://api.github.com/repos/engineeringruntime/engineering-runtime-releases/releases/latest)"
+          version="$(jq -r '.tag_name' <<<"$release_json")"
+          if ! [[ "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "latest release returned an invalid tag: $version" >&2
+            exit 1
+          fi
+          if [ "$(jq -r '.draft or .prerelease' <<<"$release_json")" != "false" ]; then
+            echo "latest release must be non-draft and non-prerelease" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Download checksums and verify all formula assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          base="https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/$version"
+          curl -fsSL "$base/SHA256SUMS.txt" -o SHA256SUMS.txt
+          for platform in darwin-arm64 darwin-amd64 linux-arm64 linux-amd64; do
+            asset="engineering-runtime-$version-$platform.tar.gz"
+            grep -Eq "^[0-9a-f]{64}  ${asset}$" SHA256SUMS.txt
+            curl -fsSIL "$base/$asset" >/dev/null
+          done
+
+      - name: Generate formula
+        shell: bash
+        run: ./scripts/update-formula.sh "${{ steps.release.outputs.version }}" SHA256SUMS.txt
+
+      - name: Commit changed formula
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- Formula/engineering-runtime.rb; then
+            echo "Formula already matches ${{ steps.release.outputs.version }}"
+            exit 0
+          fi
+          git config user.name "engineering-runtime-release-bot"
+          git config user.email "engineering-runtime-release-bot@users.noreply.github.com"
+          git add Formula/engineering-runtime.rb
+          git commit -m "brew: update Engineering Runtime to ${{ steps.release.outputs.version }}"
+          git push

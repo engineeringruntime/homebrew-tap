@@ -1,0 +1,72 @@
+name: Homebrew tap
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macOS arm64
+            runner: macos-15
+          - platform: macOS Intel
+            runner: macos-15-intel
+          - platform: Linux arm64
+            runner: ubuntu-24.04-arm
+          - platform: Linux amd64
+            runner: ubuntu-24.04
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Checkout tap
+        uses: actions/checkout@v4
+
+      - name: Locate Homebrew
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v brew >/dev/null 2>&1; then
+            if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+              echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
+            else
+              echo "Homebrew is not installed on this runner" >&2
+              exit 1
+            fi
+          fi
+
+      - name: Tap this checkout
+        shell: bash
+        run: brew tap engineeringruntime/tap "$GITHUB_WORKSPACE"
+
+      - name: Audit and style
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew audit --strict --online engineeringruntime/tap/engineering-runtime
+          brew style --formula engineeringruntime/tap/engineering-runtime
+
+      - name: Install and verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          test_home="$(mktemp -d)"
+          brew install engineeringruntime/tap/engineering-runtime
+          runtime_bin="$(brew --prefix)/bin/runtime"
+          "$runtime_bin" version | grep -Fx "runtime 0.8.0"
+          ENGINEERING_RUNTIME_HOME="$test_home" "$runtime_bin" config validate
+          test -f "$test_home/version"
+          brew test engineeringruntime/tap/engineering-runtime
+          brew uninstall engineering-runtime
+          test -f "$test_home/version"
+          if [ -e "$(brew --prefix)/bin/runtime" ]; then
+            echo "Homebrew-managed runtime remained on PATH after uninstall" >&2
+            exit 1
+          fi
