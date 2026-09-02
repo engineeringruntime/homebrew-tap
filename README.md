@@ -42,6 +42,8 @@ brew test engineeringruntime/tap/engineering-runtime
 
 Release archives and checksums are published in
 [`engineeringruntime/engineering-runtime-releases`](https://github.com/engineeringruntime/engineering-runtime-releases).
-The tap checks that repository's latest public release hourly and updates the
-formula automatically. Drafts and prereleases are not returned by the Latest
-Release API and cannot update the formula.
+The Runtime release process dispatches the tap's updater after publishing a
+release. A maintainer can also run **Update from latest Runtime release**
+manually from GitHub Actions. There is no scheduled polling job. Drafts and
+prereleases are not returned by the Latest Release API and cannot update the
+formula.
