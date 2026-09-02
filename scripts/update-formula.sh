@@ -43,24 +43,24 @@ class EngineeringRuntime < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-darwin-arm64.tar.gz"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-darwin-arm64.tar.gz?version=${version}"
       sha256 "${darwin_arm64}"
     end
 
     on_intel do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-darwin-amd64.tar.gz"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-darwin-amd64.tar.gz?version=${version}"
       sha256 "${darwin_amd64}"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-linux-arm64.tar.gz"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-linux-arm64.tar.gz?version=${version}"
       sha256 "${linux_arm64}"
     end
 
     on_intel do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-linux-amd64.tar.gz"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-linux-amd64.tar.gz?version=${version}"
       sha256 "${linux_amd64}"
     end
   end
