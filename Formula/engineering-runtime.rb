@@ -4,25 +4,25 @@ class EngineeringRuntime < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.9.1/engineering-runtime-v0.9.1-darwin-arm64.tar.gz?version=0.9.1"
-      sha256 "4a2751526167f8753208faa5fab1c8a0915c284afe51e0b8e532da136e17ba10"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.9.2/engineering-runtime-v0.9.2-darwin-arm64.tar.gz?version=0.9.2"
+      sha256 "1adee352c80ff081b07484a01cb60c52b1799119b2e39f602853715f86f83099"
     end
 
     on_intel do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.9.1/engineering-runtime-v0.9.1-darwin-amd64.tar.gz?version=0.9.1"
-      sha256 "e00cc568e58e417a8d03eaa34b2a1dc8fd9f7d09c8e4620bf29798ba2b64771e"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.9.2/engineering-runtime-v0.9.2-darwin-amd64.tar.gz?version=0.9.2"
+      sha256 "7c74b03420c854679773172caf48086b30fc5b3b9cfe8be73d949469f5c8d3d1"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.9.1/engineering-runtime-v0.9.1-linux-arm64.tar.gz?version=0.9.1"
-      sha256 "a52ef169b8c9f00d403c9e60aa5c31238439b516d9554840e2fef4d550f3e4c6"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.9.2/engineering-runtime-v0.9.2-linux-arm64.tar.gz?version=0.9.2"
+      sha256 "59673baf9bf34393cef6882de3232a9a35ae792e297eb4c68d2b941e96981470"
     end
 
     on_intel do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.9.1/engineering-runtime-v0.9.1-linux-amd64.tar.gz?version=0.9.1"
-      sha256 "dc9491efe761914987801341a49dd76019e78c539913d665e473976f8a1a09f8"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.9.2/engineering-runtime-v0.9.2-linux-amd64.tar.gz?version=0.9.2"
+      sha256 "6bc38750812fd24982df27372a2ca15f18a39075f1ea340aba786fb99b57bcfa"
     end
   end
 
