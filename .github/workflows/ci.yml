@@ -62,7 +62,7 @@ jobs:
           runtime_bin="$(brew --prefix)/bin/runtime"
           formula_version="$(brew info --json=v2 engineeringruntime/tap/engineering-runtime | jq -r '.formulae[0].versions.stable')"
           "$runtime_bin" version | grep -Fx "runtime $formula_version"
-          ENGINEERING_RUNTIME_HOME="$test_home" "$runtime_bin" config validate
+          RUNTIME_HOME="$test_home" "$runtime_bin" config validate
           test -f "$test_home/version"
           brew test engineeringruntime/tap/engineering-runtime
           brew uninstall engineering-runtime
