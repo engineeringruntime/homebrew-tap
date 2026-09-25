@@ -58,16 +58,25 @@ jobs:
         run: |
           set -euo pipefail
           test_home="$(mktemp -d)"
+          # The executable is whatever the formula installs: engrt from
+          # v0.10.0, runtime before it. Each reads only its own Home
+          # variable, so both are set to the same test Home.
+          bin_name="$(sed -n 's/^ *bin\.install "\([^"]*\)"$/\1/p' Formula/engineering-runtime.rb)"
+          case "$bin_name" in engrt|runtime) ;; *) echo "unexpected formula binary: $bin_name" >&2; exit 1 ;; esac
           brew install engineeringruntime/tap/engineering-runtime
-          runtime_bin="$(brew --prefix)/bin/runtime"
+          runtime_bin="$(brew --prefix)/bin/$bin_name"
           formula_version="$(brew info --json=v2 engineeringruntime/tap/engineering-runtime | jq -r '.formulae[0].versions.stable')"
-          "$runtime_bin" version | grep -Fx "runtime $formula_version"
-          RUNTIME_HOME="$test_home" "$runtime_bin" config validate
+          "$runtime_bin" version | grep -Fx "$bin_name $formula_version"
+          ENGRT_HOME="$test_home" RUNTIME_HOME="$test_home" "$runtime_bin" config validate
           test -f "$test_home/version"
           brew test engineeringruntime/tap/engineering-runtime
           brew uninstall engineering-runtime
           test -f "$test_home/version"
-          if [ -e "$(brew --prefix)/bin/runtime" ]; then
-            echo "Homebrew-managed runtime remained on PATH after uninstall" >&2
+          if [ -e "$(brew --prefix)/bin/$bin_name" ]; then
+            echo "Homebrew-managed $bin_name remained on PATH after uninstall" >&2
             exit 1
           fi
+
+      - name: Formula generator
+        shell: bash
+        run: ./scripts/test-update-formula.sh
