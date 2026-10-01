@@ -23,12 +23,12 @@ This repository never builds Runtime and never hosts binaries.
 - Uninstall must leave the user's Runtime Home in place.
 - Releasing and dispatching the updater are owner-authorized steps.
 
-## Current state (2026-09-25)
+## Current state (2026-10-01)
 
-- The committed formula installs **v0.9.9**, which ships the `runtime`
-  executable.
-- v0.10.0 renames the executable to `engrt` and archives to
-  `engrt-<version>-<os>-<arch>.tar.gz` (Runtime ADR-008). The generator, updater
-  and CI changes for that are in homebrew-tap PR #4, which must merge before
-  v0.10.0 is published; the updater then regenerates the formula. The formula
-  name stays `engineering-runtime`.
+The owner authorized merging PR #4 after private v0.10.0 publication.
+The formula installs `engrt` from the actual published v0.10.0 archives and
+checksums; generator, updater and CI use the engrt layout. Formula name remains
+`engineering-runtime`. Repository visibility is unchanged. Anonymous downloads
+and native Homebrew installation/upgrade/uninstall verification remain pending
+public artifact access; do not claim those gates passed. Runtime supports
+Windows through its separate PowerShell installer/ZIP path, not this tap.

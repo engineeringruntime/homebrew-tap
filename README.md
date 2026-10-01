@@ -5,8 +5,12 @@ Official Homebrew distribution for
 
 ## Install
 
+The v0.10.0 formula is prepared on main. Standard Homebrew downloads require
+public access to this tap and the release assets; that access remains
+owner-controlled. End-to-end Homebrew installation is not yet verified.
+
 Engineering Runtime supports macOS and Linux on arm64 and amd64.
-Windows support is not yet available.
+Windows uses the [PowerShell installer or ZIP installation](https://docs.engineeringruntime.com/get-started/installation/#v0100-windows-candidate-preparation), rather than Homebrew.
 
 ```bash
 brew install engineeringruntime/tap/engineering-runtime
@@ -35,7 +39,7 @@ is `~/.engrt`, and `~/.engineering-runtime` is not read. To keep its audit
 history, copy it before the first `engrt` command:
 
 ```bash
-cp -Rp ~/.engineering-runtime ~/.engrt
+test ! -e ~/.engrt && cp -Rp ~/.engineering-runtime ~/.engrt
 ```
 
 Runtime environment variables are renamed from `RUNTIME_*` to `ENGRT_*`; see
