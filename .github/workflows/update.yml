@@ -42,7 +42,7 @@ jobs:
           base="https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/$version"
           curl -fsSL "$base/SHA256SUMS.txt" -o SHA256SUMS.txt
           for platform in darwin-arm64 darwin-amd64 linux-arm64 linux-amd64; do
-            asset="engineering-runtime-$version-$platform.tar.gz"
+            asset="engrt-$version-$platform.tar.gz"
             grep -Eq "^[0-9a-f]{64}  ${asset}$" SHA256SUMS.txt
             curl -fsSIL "$base/$asset" >/dev/null
           done

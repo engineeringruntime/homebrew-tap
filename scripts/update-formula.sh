@@ -14,6 +14,13 @@ if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "invalid semantic version: $1" >&2
   exit 2
 fi
+# v0.10.0 renamed the executable to engrt and its archives to engrt-* (ADR-008
+# in the Runtime repository). This generator only knows that layout.
+IFS=. read -r major minor _ <<<"$version"
+if [ "$major" -eq 0 ] && [ "$minor" -lt 10 ]; then
+  echo "v$version predates the engrt executable (v0.10.0); this generator only writes engrt formulas" >&2
+  exit 2
+fi
 if [ ! -f "$checksums" ]; then
   echo "checksum file not found: $checksums" >&2
   exit 2
@@ -30,10 +37,10 @@ checksum_for() {
   printf '%s' "$checksum"
 }
 
-darwin_arm64="$(checksum_for "engineering-runtime-v${version}-darwin-arm64.tar.gz")"
-darwin_amd64="$(checksum_for "engineering-runtime-v${version}-darwin-amd64.tar.gz")"
-linux_arm64="$(checksum_for "engineering-runtime-v${version}-linux-arm64.tar.gz")"
-linux_amd64="$(checksum_for "engineering-runtime-v${version}-linux-amd64.tar.gz")"
+darwin_arm64="$(checksum_for "engrt-v${version}-darwin-arm64.tar.gz")"
+darwin_amd64="$(checksum_for "engrt-v${version}-darwin-amd64.tar.gz")"
+linux_arm64="$(checksum_for "engrt-v${version}-linux-arm64.tar.gz")"
+linux_amd64="$(checksum_for "engrt-v${version}-linux-amd64.tar.gz")"
 
 mkdir -p "$(dirname "$formula_path")"
 cat >"$formula_path" <<EOF
@@ -43,34 +50,42 @@ class EngineeringRuntime < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-darwin-arm64.tar.gz?version=${version}"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engrt-v${version}-darwin-arm64.tar.gz?version=${version}"
       sha256 "${darwin_arm64}"
     end
 
     on_intel do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-darwin-amd64.tar.gz?version=${version}"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engrt-v${version}-darwin-amd64.tar.gz?version=${version}"
       sha256 "${darwin_amd64}"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-linux-arm64.tar.gz?version=${version}"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engrt-v${version}-linux-arm64.tar.gz?version=${version}"
       sha256 "${linux_arm64}"
     end
 
     on_intel do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engineering-runtime-v${version}-linux-amd64.tar.gz?version=${version}"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v${version}/engrt-v${version}-linux-amd64.tar.gz?version=${version}"
       sha256 "${linux_amd64}"
     end
   end
 
   def install
-    bin.install "runtime"
+    bin.install "engrt"
+  end
+
+  def caveats
+    <<~EOS
+      The command is engrt and its Runtime Home is ~/.engrt (from v0.10.0).
+      An earlier ~/.engineering-runtime is not read; copy it to ~/.engrt
+      before the first engrt command to keep its audit history.
+    EOS
   end
 
   test do
-    assert_match "runtime #{version}", shell_output("#{bin}/runtime version")
+    assert_match "engrt #{version}", shell_output("#{bin}/engrt version")
   end
 end
 EOF

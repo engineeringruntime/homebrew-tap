@@ -5,13 +5,21 @@ Official Homebrew distribution for
 
 ## Install
 
+The v0.10.0 formula is prepared on main. Standard Homebrew downloads require
+public access to this tap and the release assets; that access remains
+owner-controlled. End-to-end Homebrew installation is not yet verified.
+
 Engineering Runtime supports macOS and Linux on arm64 and amd64.
-Windows support is not yet available in v0.9.9.
+Windows uses the [PowerShell installer or ZIP installation](https://docs.engineeringruntime.com/get-started/installation/#v0100-windows-candidate-preparation), rather than Homebrew.
 
 ```bash
 brew install engineeringruntime/tap/engineering-runtime
-runtime version
+engrt version
 ```
+
+From v0.10.0 the formula installs the `engrt` command (earlier releases
+installed `runtime`). The formula name stays `engineering-runtime`, the product
+name.
 
 The formula supports Homebrew on macOS and Linux, on arm64 and amd64. It downloads
 the same versioned archives used by the checksum-verifying
@@ -25,6 +33,18 @@ brew update
 brew upgrade engineering-runtime
 ```
 
+Upgrading from v0.9.x to v0.10.0 replaces the Homebrew-managed `runtime` with
+`engrt`; update scripts and CI that call `runtime`. The new default Runtime Home
+is `~/.engrt`, and `~/.engineering-runtime` is not read. To keep its audit
+history, copy it before the first `engrt` command:
+
+```bash
+test ! -e ~/.engrt && cp -Rp ~/.engineering-runtime ~/.engrt
+```
+
+Runtime environment variables are renamed from `RUNTIME_*` to `ENGRT_*`; see
+the [upgrade guide](https://docs.engineeringruntime.com/get-started/upgrading/).
+
 ## Uninstall
 
 ```bash
@@ -32,8 +52,9 @@ brew uninstall engineering-runtime
 ```
 
 Uninstalling removes the Homebrew-managed binary only. It deliberately leaves
-`~/.engineering-runtime` intact because that directory contains user- and
-company-owned configuration, policy, capabilities, and audit state.
+the Runtime Home (`~/.engrt`, or `~/.engineering-runtime` before v0.10.0)
+intact because that directory contains user- and company-owned configuration,
+policy, capabilities, and audit state.
 
 ## Maintainer checks
 
@@ -41,6 +62,7 @@ company-owned configuration, policy, capabilities, and audit state.
 brew audit --strict --online engineeringruntime/tap/engineering-runtime
 brew style --formula engineeringruntime/tap/engineering-runtime
 brew test engineeringruntime/tap/engineering-runtime
+./scripts/test-update-formula.sh
 ```
 
 Release archives and checksums are published in
