@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      online_audit:
+        description: "Run brew audit --online (homepage/URL reachability). Turn off only while the owner has the website down on purpose; record the exception."
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -50,7 +55,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          brew audit --strict --online engineeringruntime/tap/engineering-runtime
+          # Push/PR runs have no inputs and always audit online.
+          if [ "${{ inputs.online_audit }}" = "false" ]; then
+            echo "::warning::online audit skipped by dispatch input (homepage reachability not checked)"
+            brew audit --strict engineeringruntime/tap/engineering-runtime
+          else
+            brew audit --strict --online engineeringruntime/tap/engineering-runtime
+          fi
           brew style --formula engineeringruntime/tap/engineering-runtime
 
       - name: Install and verify
