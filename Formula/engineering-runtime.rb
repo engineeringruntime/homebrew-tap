@@ -4,25 +4,25 @@ class EngineeringRuntime < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.10.0/engrt-v0.10.0-darwin-arm64.tar.gz?version=0.10.0"
-      sha256 "063af7fe5904af3ffa70744a31e1b80cd49088fa484e65ceb6bf1f0f17a3ef8b"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.11.0/engrt-v0.11.0-darwin-arm64.tar.gz?version=0.11.0"
+      sha256 "c71d722b4ba3149167dec2233b174189e8e2f1d47a0f984e68b31b0eff7c0200"
     end
 
     on_intel do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.10.0/engrt-v0.10.0-darwin-amd64.tar.gz?version=0.10.0"
-      sha256 "86df0fe85f7960380c98beb8f8de0f702e40498ad434736ef1be55e764e1f999"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.11.0/engrt-v0.11.0-darwin-amd64.tar.gz?version=0.11.0"
+      sha256 "9bf7222a3171d4c947d31baed7ac4a07162e60e748718aa8baae79dacd58c89b"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.10.0/engrt-v0.10.0-linux-arm64.tar.gz?version=0.10.0"
-      sha256 "80b5cec4b30741e4f172963f72186b89f6957b28dfb32e27240947b6852122d1"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.11.0/engrt-v0.11.0-linux-arm64.tar.gz?version=0.11.0"
+      sha256 "277dec532bd11f00840649f53999b2e79df4b338fe286e37c8248ea5a0a3c5b4"
     end
 
     on_intel do
-      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.10.0/engrt-v0.10.0-linux-amd64.tar.gz?version=0.10.0"
-      sha256 "937c989c6a3c3eecb96083f61f5f53c09e5ea1bd0d140d7f0e34515d12c7593c"
+      url "https://github.com/engineeringruntime/engineering-runtime-releases/releases/download/v0.11.0/engrt-v0.11.0-linux-amd64.tar.gz?version=0.11.0"
+      sha256 "f5be2fa0bb6bb0e9aecd8b9079049c3857106c9743b804d8df0be443a9fd5332"
     end
   end
 
