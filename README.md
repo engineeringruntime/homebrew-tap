@@ -1,16 +1,23 @@
 # Engineering Runtime Homebrew tap
 
+[![Homebrew tap](https://github.com/engineeringruntime/homebrew-tap/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/engineeringruntime/homebrew-tap/actions/workflows/ci.yml)
+[![engrt release](https://img.shields.io/github/v/release/engineeringruntime/engineering-runtime-releases?label=engrt)](https://github.com/engineeringruntime/engineering-runtime-releases/releases/latest)
+
 Official Homebrew distribution for
 [Engineering Runtime](https://engineeringruntime.com/).
 
 ## Install
 
-The v0.10.0 formula is prepared on main. Standard Homebrew downloads require
-public access to this tap and the release assets; that access remains
-owner-controlled. End-to-end Homebrew installation is not yet verified.
+The formula installs the latest Engineering Runtime release from the public
+[releases repository](https://github.com/engineeringruntime/engineering-runtime-releases)
+and checks each archive against that release's SHA-256 checksums. This tap's CI
+installs, runs, tests and uninstalls it on macOS (Apple silicon and Intel) and
+Linux (arm64 and amd64).
 
-Engineering Runtime supports macOS and Linux on arm64 and amd64.
-Windows uses the [PowerShell installer or ZIP installation](https://docs.engineeringruntime.com/get-started/installation/#v0100-windows-candidate-preparation), rather than Homebrew.
+Windows is not supported by Homebrew; use the
+[PowerShell installer or ZIP](https://github.com/engineeringruntime/engineering-runtime-releases#windows-powershell-7-x64-or-arm64).
+To run your first capability after installing, follow the
+[capabilities quick start](https://github.com/engineeringruntime/engineering-runtime-capabilities#quick-start-from-install-to-your-first-run).
 
 ```bash
 brew install engineeringruntime/tap/engineering-runtime
@@ -72,3 +79,11 @@ release. A maintainer can also run **Update from latest Runtime release**
 manually from GitHub Actions. There is no scheduled polling job. Drafts and
 prereleases are not returned by the Latest Release API and cannot update the
 formula.
+
+## Security and licence
+
+Report security problems privately, as [SECURITY.md](SECURITY.md) describes.
+
+This tap's formula and scripts are licensed under the [BSD 2-Clause License](LICENSE).
+The Engineering Runtime binary it installs is proprietary software under its own
+[binary licence](https://github.com/engineeringruntime/engineering-runtime-releases/blob/main/LICENSE).
