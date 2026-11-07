@@ -24,6 +24,12 @@ brew install engineeringruntime/tap/engineering-runtime
 engrt version
 ```
 
+Always use the full name, `engineeringruntime/tap/engineering-runtime`. Since Homebrew 7, formulae from
+third-party taps load only once trusted; installing, upgrading or reinstalling
+by the full name trusts this formula, while a short name such as
+`brew upgrade engineering-runtime` is refused until then. To trust it
+explicitly: `brew trust --formula engineeringruntime/tap/engineering-runtime`.
+
 From v0.10.0 the formula installs the `engrt` command (earlier releases
 installed `runtime`). The formula name stays `engineering-runtime`, the product
 name.
@@ -37,7 +43,7 @@ path.
 
 ```bash
 brew update
-brew upgrade engineering-runtime
+brew upgrade engineeringruntime/tap/engineering-runtime
 ```
 
 Upgrading from v0.9.x to v0.10.0 replaces the Homebrew-managed `runtime` with
@@ -55,7 +61,7 @@ the [upgrade guide](https://docs.engineeringruntime.com/get-started/upgrading/).
 ## Uninstall
 
 ```bash
-brew uninstall engineering-runtime
+brew uninstall engineeringruntime/tap/engineering-runtime
 ```
 
 Uninstalling removes the Homebrew-managed binary only. It deliberately leaves
