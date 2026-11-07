@@ -51,6 +51,12 @@ jobs:
         shell: bash
         run: brew tap engineeringruntime/tap "$GITHUB_WORKSPACE"
 
+      # Homebrew 7 refuses to load formulae from an untrusted third-party tap,
+      # including for audit, style and test. Trust only the formula under test.
+      - name: Trust the formula under test
+        shell: bash
+        run: brew trust --formula engineeringruntime/tap/engineering-runtime
+
       - name: Audit and style
         shell: bash
         run: |
