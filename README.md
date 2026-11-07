@@ -8,9 +8,11 @@ Official Homebrew distribution for
 
 ## Install
 
-The formula installs the latest Engineering Runtime release from the public
+The formula installs the **version currently packaged in this tap** from the public
 [releases repository](https://github.com/engineeringruntime/engineering-runtime-releases)
-and checks each archive against that release's SHA-256 checksums. This tap's CI
+and checks each archive against that release's SHA-256 checksums. The formula
+contains exact version and checksum pins; it may temporarily lag the newest
+published release until the updater and validation complete. This tap's CI
 installs, runs, tests and uninstalls it on macOS (Apple silicon and Intel) and
 Linux (arm64 and amd64).
 
