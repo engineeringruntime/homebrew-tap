@@ -12,7 +12,9 @@ The formula installs the **version currently packaged in this tap** from the pub
 [releases repository](https://github.com/engineeringruntime/engineering-runtime-releases)
 and checks each archive against that release's SHA-256 checksums. The formula
 contains exact version and checksum pins; it may temporarily lag the newest
-published release until the updater and validation complete. This tap's CI
+published release until a maintainer manually runs the updater. The update
+workflow checks the published assets and commits the generated formula, while
+CI provides additional validation. This tap's CI
 installs, runs, tests and uninstalls it on macOS (Apple silicon and Intel) and
 Linux (arm64 and amd64).
 
