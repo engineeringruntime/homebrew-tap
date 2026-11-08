@@ -2,9 +2,16 @@ name: Update from latest Runtime release
 
 on:
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: Exact published stable release (vX.Y.Z); empty selects latest
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: update-runtime-formula
@@ -17,13 +24,27 @@ jobs:
       - name: Checkout tap
         uses: actions/checkout@v4
 
-      - name: Resolve latest public release
+      - name: Resolve requested stable release and confirm Latest
         id: release
         shell: bash
+        env:
+          REQUESTED_RELEASE: ${{ inputs.release_version }}
         run: |
           set -euo pipefail
-          release_json="$(curl -fsSL https://api.github.com/repos/engineeringruntime/engineering-runtime-releases/releases/latest)"
-          version="$(jq -r '.tag_name' <<<"$release_json")"
+          base=https://api.github.com/repos/engineeringruntime/engineering-runtime-releases/releases
+          release_json="$(curl -fsSL "$base/latest")"
+          latest="$(jq -r '.tag_name' <<<"$release_json")"
+          if [ -n "$REQUESTED_RELEASE" ]; then
+            if ! [[ "$REQUESTED_RELEASE" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "invalid requested release tag" >&2
+              exit 1
+            fi
+            if [ "$REQUESTED_RELEASE" != "$latest" ]; then
+              echo "requested release is no longer Latest; refuse stale formula promotion" >&2
+              exit 1
+            fi
+          fi
+          version="$latest"
           if ! [[ "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "latest release returned an invalid tag: $version" >&2
             exit 1
@@ -47,9 +68,15 @@ jobs:
             curl -fsSIL "$base/$asset" >/dev/null
           done
 
+      - name: Validate formula generator
+        shell: bash
+        run: ./scripts/test-update-formula.sh
+
       - name: Generate formula
         shell: bash
-        run: ./scripts/update-formula.sh "${{ steps.release.outputs.version }}" SHA256SUMS.txt
+        run: |
+          ./scripts/update-formula.sh "${{ steps.release.outputs.version }}" SHA256SUMS.txt
+          ruby -c Formula/engineering-runtime.rb
 
       - name: Commit changed formula
         shell: bash
@@ -64,3 +91,18 @@ jobs:
           git add Formula/engineering-runtime.rb
           git commit -m "brew: update Engineering Runtime to ${{ steps.release.outputs.version }}"
           git push
+
+      # Pushes authenticated by GITHUB_TOKEN do not start a push-triggered CI run.
+      # workflow_dispatch is an allowed exception; request all four native lanes.
+      - name: Request four-platform Homebrew verification
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run ci.yml -R engineeringruntime/homebrew-tap --ref main
+          {
+            echo "### Homebrew distribution verification"
+            echo "Formula generation completed for **${{ steps.release.outputs.version }}**."
+            echo "Four-platform [Homebrew CI](https://github.com/engineeringruntime/homebrew-tap/actions/workflows/ci.yml) was dispatched."
+            echo "Release closure still requires observing all required CI outcomes and installed-binary evidence."
+          } >> "$GITHUB_STEP_SUMMARY"
