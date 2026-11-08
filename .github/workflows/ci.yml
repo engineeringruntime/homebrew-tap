@@ -32,7 +32,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout tap
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Locate Homebrew
         shell: bash
