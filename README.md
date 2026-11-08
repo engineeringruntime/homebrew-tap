@@ -12,9 +12,10 @@ The formula installs the **version currently packaged in this tap** from the pub
 [releases repository](https://github.com/engineeringruntime/engineering-runtime-releases)
 and checks each archive against that release's SHA-256 checksums. The formula
 contains exact version and checksum pins; it may temporarily lag the newest
-published release until a maintainer manually runs the updater. The update
-workflow checks the published assets and commits the generated formula, while
-CI provides additional validation. This tap's CI
+published release while the post-release handoff, formula update and native CI
+run. A maintainer can dispatch the updater manually if the event-driven handoff
+was not delivered. Neither a formula commit nor a dispatched CI run alone
+establishes qualification. This tap's CI
 installs, runs, tests and uninstalls it on macOS (Apple silicon and Intel) and
 Linux (arm64 and amd64).
 
@@ -84,11 +85,15 @@ brew test engineeringruntime/tap/engineering-runtime
 
 Release archives and checksums are published in
 [`engineeringruntime/engineering-runtime-releases`](https://github.com/engineeringruntime/engineering-runtime-releases).
-The Runtime release process dispatches the tap's updater after publishing a
-release. A maintainer can also run **Update from latest Runtime release**
-manually from GitHub Actions. There is no scheduled polling job. Drafts and
-prereleases are not returned by the Latest Release API and cannot update the
-formula.
+After a stable release is published, the Releases repository's
+[post-release distribution workflow](https://github.com/engineeringruntime/engineering-runtime-releases/blob/main/.github/workflows/post-release-distribution.yml)
+checks the published inventory and dispatches this tap's updater with the exact
+version. The updater generates the formula, commits when it changes, and
+explicitly dispatches the four-platform CI (a GITHUB_TOKEN push alone cannot
+start it). The release operator still checks the CI outcomes and installed binary.
+A maintainer can run **Update from latest Runtime release** manually if the
+handoff is missing or fails. There is no scheduled polling job. Drafts,
+prereleases and a non-Latest requested version cannot update the formula.
 
 ## Security and licence
 
